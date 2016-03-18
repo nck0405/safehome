@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView"
+            android:layout_below="@+id/linearLayout2"
+            android:layout_toRightOf="@+id/linearLayout"
+            android:layout_toEndOf="@+id/linearLayout"
+            android:text="Safe Home App"
+            android:textSize="30dp" />
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#000000"></View>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:id="@+id/btnHousePlan1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="House Plan" />
+
+        <Button
+            android:id="@+id/btnSensorControl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="Sensor Control" />
+
+        <Button
+            android:id="@+id/btnSensorAction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="Sensor Action"
+            />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#000000"></View>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="#FFFFFF"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1">
+        <Button
+            android:id="@+id/btnSmoke"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text=""
+            android:background="@drawable/fire"/>
+        <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="    Smoke Sensor "
+        android:textColor="#000000"
+        android:id="@+id/textSmoke" />
+
+        <Button
+            android:id="@+id/btnSmokeIndicator"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text=" "
+            android:background="@android:color/holo_green_light"
+            />
+
+       <!-- <Button
+            android:id="@+id/btnSmokeAction"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:text="Fire Alarm : OFF"
+            />-->
+    </LinearLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="#FFFFFF"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/btnDoorOpen"
+            android:layout_width="45dp"
+            android:layout_height="40dp"
+            android:text=""
+            android:background="@drawable/intrudor"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="  Door Open        "
+            android:textColor="#000000"
+            android:id="@+id/txtDoorOpen" />
+
+        <Button
+            android:id="@+id/btnDoorOpenIndicator"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text=" "
+            android:background="@android:color/holo_green_light"
+            />
+
+       <!-- <Button
+            android:id="@+id/btnImageAction"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:text="Get Room Image"-->
+            />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="#FFFFFF"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/btnRain"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text=""
+            android:background="@drawable/rain"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="  Flood Sensor     "
+            android:textColor="#000000"
+            android:id="@+id/txtRain" />
+
+        <Button
+            android:id="@+id/btnRainIndicator"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text=" "
+            android:background="@android:color/holo_green_light"
+            />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="#FFFFFF"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/btnIntruder"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text=""
+            android:background="@drawable/intrudor1"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="  Intruder Sensor"
+            android:textColor="#000000"
+            android:id="@+id/txtIntruder" />
+
+        <Button
+            android:id="@+id/btnIntruderIndicator"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text=" "
+            android:background="@android:color/holo_green_light"
+            />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="#FFFFFF"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/btnSound"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text=""
+            android:background="@drawable/sound"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="  Sound  Sensor   "
+            android:textColor="#000000"
+            android:id="@+id/txtSound" />
+
+        <Button
+            android:id="@+id/btnSoundIndicator"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text=" "
+            android:background="@android:color/holo_green_light"
+            />
+
+       <!-- <Button
+            android:id="@+id/btnSoundAction"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:text=" Alert Security"
+            />-->
+    </LinearLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="#FFFFFF"/>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:indeterminate="false" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/imgView"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Sensor view of room . You can send commands to devices and control actions as specified above."
+        android:id="@+id/txtInstructions" />
+</LinearLayout>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#000000"></View>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_toRightOf="@+id/linearLayout"
+        android:layout_toEndOf="@+id/linearLayout"
+        android:text="Safe Home App"
+        android:textSize="30dp" />
+
+<View
+android:layout_width="match_parent"
+android:layout_height="2dp"
+android:background="#000000"></View>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:id="@+id/btnHousePlan1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="House Plan" />
+
+        <Button
+            android:id="@+id/btnSensorControl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="Sensor Control" />
+
+        <Button
+            android:id="@+id/btnSensorAction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="Sensor Action"
+            />
+    </LinearLayout>
+
+
+       <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#000000"></View>
+
+        <LinearLayout
+            android:orientation="vertical" android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:weightSum="1">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="#FFFFFF"></View>
+
+            <Button
+                android:id="@+id/btnSmokeAction"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:text="Fire Alarm : OFF"
+                android:layout_gravity="center_horizontal" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="#FFFFFF"></View>
+            <Button
+                android:id="@+id/btnImageViewAction"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:text="Get Room Image"
+                android:layout_gravity="center_horizontal" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="#FFFFFF"></View>
+            <Button
+                android:id="@+id/btnSoundAction"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:text=" Alert Security"
+                android:layout_gravity="center_horizontal" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:background="#FFFFFF"></View>
+            <ImageView
+                android:layout_width="163dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/imgCamView"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.70" />
+
+
+        </LinearLayout>
+</LinearLayout>
+
