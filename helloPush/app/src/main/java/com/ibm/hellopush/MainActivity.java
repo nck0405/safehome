@@ -109,11 +109,9 @@ public class MainActivity extends Activity {
 			// You can find your backendRoute and backendGUID in the Mobile Options section on top of your Bluemix application dashboard
             // TODO: Please replace <APPLICATION_ROUTE> with a valid ApplicationRoute and <APPLICATION_ID> with a valid ApplicationId
             //BMSClient.getInstance().initialize(this, "<APPLICATION_ROUTE>", "<APPLICATION_ID>");
-            Log.i("Before call BMS Client", "");
-            //BMSClient.getInstance().initialize(this, "http://nckmobapp.mybluemix.net", "bf5409da-b032-47ef-a18d-642f491ca330");
-            Log.i("After call BMS Client", "");
+            BMSClient.getInstance().initialize(this, "http://nckmobapp.mybluemix.net", "bf5409da-b032-47ef-a18d-642f491ca330");
             //BMSClient.getInstance().initialize(this, "http://mysafehome.mybluemix.net", "0f1f229d-5240-4da2-bbe1-623e78434d9d");
-            BMSClient.getInstance().initialize(this, "http://safehome.mybluemix.net", "2f64f1c8-82a5-45ed-baca-647a53b858fb");
+            //BMSClient.getInstance().initialize(this, "http://safehome.mybluemix.net", "2f64f1c8-82a5-45ed-baca-647a53b858fb");
             //BMSClient.getInstance().initialize(this, "http://nckmobilepush.mybluemix.net", "6053327c-cf7b-4819-8554-891b508a2cb5");
         }
         catch (MalformedURLException mue) {
@@ -128,7 +126,6 @@ public class MainActivity extends Activity {
             @Override
             public void onSuccess(String deviceId) {
                 setStatus("Device Registered Successfully " + deviceId, true);
-                Log.i(TAG, "Successfully registered for push notifications");
                 push.listen(notificationListener);
             }
 
@@ -166,6 +163,69 @@ public class MainActivity extends Activity {
                 });
             }
         };
+    }
+
+    private void readJson(String message) {
+        JSONObject jsonObj, jsonObjSensor = null;
+        try {
+            jsonObj = new JSONObject(message);
+            //jsonObjSensor= new JSONObject(message);
+            jsonObjSensor = (JSONObject) jsonObj.get("payload");
+
+            Log.i("Complete message : ", jsonObjSensor.toString());
+            Log.i("Sensor Type : ", jsonObjSensor.get("Sensor_Type") + "");
+
+            SensorType = (String) jsonObjSensor.get("Sensor_Type");
+            SensorState = (String) jsonObjSensor.get("Sensor_State");
+            SensorLocation = (String) jsonObjSensor.get("Sensor_Location");
+            SensorEvent = (String) jsonObjSensor.get("Sensor_Event");
+            SensorDate = (String) jsonObjSensor.get("date");
+            //PhotoUrl = (String) jsonObjSensor.get("photo_url");
+            //Token = (String) jsonObjSensor.get("token");
+
+            if (jsonObjSensor.get("Sensor_Type") != null) {
+                Set<String> sensorSet = new HashSet<String>();
+                sensorSet.add(jsonObjSensor.toString());
+                shEditor.putStringSet(SensorType, sensorSet);
+                shEditor.commit();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // If the device has been registered previously, hold push notifications when the app is paused
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (push != null) {
+            push.hold();
+        }
+    }
+
+    // If the device has been registered previously, ensure the client sdk is still using the notification listener from onCreate when app is resumed
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (push != null) {
+            push.listen(notificationListener);
+        }
+    }
+
+    /**
+     * Manipulates text fields in the UI based on initialization and registration events
+     * @param messageText String main text view
+     * @param wasSuccessful Boolean dictates top 2 text view texts
+     */
+    private void setStatus(final String messageText, boolean wasSuccessful) {
+        // final TextView buttonText = (TextView) findViewById(R.id.button_text);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, "Device Registered Successfully ", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "You are Connected ", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     /**
@@ -223,64 +283,4 @@ public class MainActivity extends Activity {
             mBuilder.setContentIntent(contentIntent);
             mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
         }*/
-    private void readJson(String message) {
-        JSONObject jsonObj, jsonObjSensor = null;
-        try {
-            jsonObjSensor = new JSONObject(message);
-            Log.e("Complete message s", jsonObjSensor.toString());
-            // jsonObjSensor=(JSONObject)jsonObj.get("payload");
-            Log.i("Sensor ---------", jsonObjSensor.get("Sensor_Type") + "");
-            SensorType = (String) jsonObjSensor.get("Sensor_Type");
-            SensorState = (String) jsonObjSensor.get("Sensor_State");
-            SensorLocation = (String) jsonObjSensor.get("Sensor_Location");
-            SensorEvent = (String) jsonObjSensor.get("Sensor_Event");
-            SensorDate = (String) jsonObjSensor.get("date");
-            PhotoUrl = (String) jsonObjSensor.get("photo_url");
-            Token = (String) jsonObjSensor.get("token");
-
-            Set<String> sensorSet = new HashSet<String>();
-            sensorSet.add(jsonObjSensor.toString());
-
-            shEditor.putStringSet(SensorType, sensorSet);
-            shEditor.commit();
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // If the device has been registered previously, hold push notifications when the app is paused
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        if (push != null) {
-            push.hold();
-        }
-    }
-
-    // If the device has been registered previously, ensure the client sdk is still using the notification listener from onCreate when app is resumed
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (push != null) {
-            push.listen(notificationListener);
-        }
-    }
-
-    /**
-     * Manipulates text fields in the UI based on initialization and registration events
-     * @param messageText String main text view
-     * @param wasSuccessful Boolean dictates top 2 text view texts
-     */
-    private void setStatus(final String messageText, boolean wasSuccessful) {
-        // final TextView buttonText = (TextView) findViewById(R.id.button_text);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(MainActivity.this, "Device Registered Successfully ", Toast.LENGTH_LONG).show();
-                Toast.makeText(MainActivity.this, "You are Connected ", Toast.LENGTH_LONG).show();
-            }
-        });
-    }
 }

@@ -20,6 +20,10 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -36,6 +40,7 @@ public class SensorView extends Activity{
     String strPayloadResponse="Sensor Log : ";
     String sAlarmStatusURI="";
     SharedPreferences shPref;
+    SharedPreferences.Editor shEditor;
     JSONObject jsonSensor;
     private Bitmap bitmap;
 
@@ -67,6 +72,8 @@ public class SensorView extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        long minutes = 0;
+
         setContentView(R.layout.sensorview);
         String[] arrySensors = {"DoorOpen", "Camera", "Intruder", "Sound", "Flood"};
         btnSmokeIndicator = (Button)findViewById(R.id.btnSmokeIndicator);
@@ -75,9 +82,52 @@ public class SensorView extends Activity{
         btnDoorOpenIndicator=(Button)findViewById(R.id.btnDoorOpenIndicator);
         btnIntruderIndicator=(Button)findViewById(R.id.btnIntruderIndicator);
         shPref = getApplicationContext().getSharedPreferences("MY_PREF", 0);
+
         Log.i("Array length ",arrySensors.length+"");
 
+
+        //Update Sensor status for each sensor
         for (int i=0;i<arrySensors.length;i++) {
+            Date sDate = new Date();
+            String sSensorDate;
+            Set<String> setSensorTemp = shPref.getStringSet(arrySensors[i].toString(), null);
+
+            if (setSensorTemp == null)
+                continue;
+
+            Log.i("Sensor Set Size:", setSensorTemp.size() + "");
+
+            Iterator<String> itr = setSensorTemp.iterator();
+            while (itr.hasNext()) {
+                try {
+                    jsonSensor = new JSONObject(itr.next().toString());
+                    sSensorDate = (String) jsonSensor.get("date");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy-HH:mm:ss");
+                    Date sensorDateTemp = dateFormat.parse(sSensorDate);
+                    Date currentDate = new Date();
+                    long diff = currentDate.getTime() - sensorDateTemp.getTime();
+                    long seconds = diff / 1000;
+                    minutes = seconds / 60;
+                    long hours = minutes / 60;
+                    long days = hours / 24;
+                    Log.i("Difference   : ", seconds + " : " + minutes + " : " + hours + " : " + days);
+                    Log.i("Sensor Date  : ", sSensorDate + "" + sDate);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                setSensorTemp = new HashSet<String>();
+                setSensorTemp.add(jsonSensor.toString());
+
+                if (minutes > 10) {
+                    shEditor.putStringSet(SensorType, null);
+                    shEditor.commit();
+                }
+            }
+        }
+        for (int i = 0; i < arrySensors.length; i++) {
             Set<String> setSensor = shPref.getStringSet(arrySensors[i].toString(),null);
             if(setSensor!=null) {
                 Log.i("Sensor "+arrySensors[i] + " : " , setSensor.toString());
@@ -89,11 +139,8 @@ public class SensorView extends Activity{
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    Toast.makeText(SensorView.this, "Loading latest status of Sensors ", Toast.LENGTH_LONG).show();
+                    Toast.makeText(SensorView.this, "Loading latest status of Sensor ", Toast.LENGTH_LONG).show();
                     setSensorAction(jsonSensor);
-                    //Update Sensor status for each sensor
-                    //shEditor.putStringSet(SensorType, sensorSet);
-                    //shEditor.commit();
                 }
             }
         }
@@ -113,24 +160,11 @@ public class SensorView extends Activity{
                 startActivity(iIntent);
             }
         });
-
-        /************************************************************************************
-        ** Call Sensor Data Service and set the Sensor status
-        ** REST URI
-        ** Parama Meters
-        ** Sample Output JSON
-        ***********************************************************************************
-        * */
-
     }
     void setSensorAction(JSONObject jsonSensor){
         try {
-
             String SensorType = (String)jsonSensor.get("Sensor_Type");
-
-
             Log.i("Set Sensor Action : ",SensorType);
-
             if(SensorType!=null) {
                 if (SensorType.equalsIgnoreCase("Intruder")) {
                     btnIntruderIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
@@ -145,7 +179,6 @@ public class SensorView extends Activity{
                     btnRainIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
                 }
                 if ((SensorType.equalsIgnoreCase("DoorOpen")) || (SensorType.equalsIgnoreCase("Camera"))) {
-
                     PhotoUrl = (String) jsonSensor.get("photo_url");
                     sToken = (String) jsonSensor.get("token");
 
@@ -155,7 +188,8 @@ public class SensorView extends Activity{
                     Log.i("PhotoUrl    ", PhotoUrl);
                     Log.i("token ", sToken);
 
-                    if(PhotoUrl!=null) {
+                    if (PhotoUrl != null)
+                        if (PhotoUrl != "") {
                         //Read Image from Phot URL
                         AsyncTaskGetImageAction asyncImageAction = new AsyncTaskGetImageAction();
                         asyncImageAction.execute();
@@ -196,7 +230,9 @@ public class SensorView extends Activity{
     class AsyncTaskGetImageAction extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            bitmap = GetBitmapfromUrl(PhotoUrl, sToken);
+            if ((PhotoUrl != null) && (sToken != null))
+                if ((PhotoUrl != "") && (sToken != ""))
+                    bitmap = GetBitmapfromUrl(PhotoUrl, sToken);
             return null;
         }
         @Override
