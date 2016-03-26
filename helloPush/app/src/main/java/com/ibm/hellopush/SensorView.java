@@ -23,7 +23,6 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -32,7 +31,7 @@ import java.util.Set;
  */
 public class SensorView extends Activity{
     static String json = "";
-    Button btnBedroom,btnSensorAction,btnSmokeSensor,btnImageAction,btnSoundAction,btnSmokeAction,btnTempAction;
+    Button btnBedroom, btnSensorAction, btnSmokeSensor, btnImageAction, btnSoundAction, btnSmokeAction, btnTempAction, btnSensorReset;
     Button btnSmokeIndicator,btnSoundIndicator,btnRainIndicator,btnDoorOpenIndicator,btnIntruderIndicator;
     String strSmokeSensorActionResponse;
     TextView txtInstructions,textSmoke;
@@ -47,11 +46,13 @@ public class SensorView extends Activity{
     @Override
     protected void onResume() {
         super.onResume();
+        shPref = getApplicationContext().getSharedPreferences("MY_PREF", 0);
         Log.i("On Resume ", "SensorView -  On Resume Life Cycle Method");
     }
     @Override
     protected void onStart() {
         super.onStart();
+        shPref = getApplicationContext().getSharedPreferences("MY_PREF", 0);
         Log.i("Onstart()", "SensorView - Onstart() Life Cycle Method");
     }
     @Override
@@ -67,6 +68,7 @@ public class SensorView extends Activity{
     @Override
     protected void onRestart() {
         super.onRestart();
+        shPref = getApplicationContext().getSharedPreferences("MY_PREF", 0);
         Log.i("OnRestart() : ", "SensorView - OnRestart Life Cycle Method");
     }
     @Override
@@ -75,7 +77,7 @@ public class SensorView extends Activity{
         long minutes = 0;
 
         setContentView(R.layout.sensorview);
-        String[] arrySensors = {"DoorOpen", "Camera", "Intruder", "Sound", "Flood"};
+        String[] arrySensors = {"DoorOpen", "Camera", "Intruder", "Sound", "Flood", "Smoke"};
         btnSmokeIndicator = (Button)findViewById(R.id.btnSmokeIndicator);
         btnSoundIndicator= (Button)findViewById(R.id.btnSoundIndicator);
         btnRainIndicator=(Button)findViewById(R.id.btnRainIndicator);
@@ -118,15 +120,26 @@ public class SensorView extends Activity{
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                setSensorTemp = new HashSet<String>();
-                setSensorTemp.add(jsonSensor.toString());
+                //setSensorTemp = new HashSet<String>();
+                //setSensorTemp.add(jsonSensor.toString());
 
+                //Remove the sensor information if it 10 min old
                 if (minutes > 10) {
-                    shEditor.putStringSet(SensorType, null);
+                    try {
+                        SensorType = (String) jsonSensor.get("Sensor_Type");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    Log.i("Removing Sensor mInfo", SensorType + " : " + minutes + "");
+                    Log.i("SH PRef", shPref.toString());
+                    shEditor = shPref.edit();
+                    shEditor.remove(SensorType);
                     shEditor.commit();
                 }
             }
         }
+
+        //Loop through Sensor Status and update the Sensor view
         for (int i = 0; i < arrySensors.length; i++) {
             Set<String> setSensor = shPref.getStringSet(arrySensors[i].toString(),null);
             if(setSensor!=null) {
@@ -160,6 +173,19 @@ public class SensorView extends Activity{
                 startActivity(iIntent);
             }
         });
+        btnSensorReset = (Button) findViewById(R.id.btnReset);
+        btnSensorReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Intent iIntent = new Intent(SensorView.this, SensorAction.class);
+                //startActivity(iIntent);
+                //Reset Shared Preferenses
+                shEditor = shPref.edit();
+                shEditor.clear();
+                shEditor.commit();
+
+            }
+        });
     }
     void setSensorAction(JSONObject jsonSensor){
         try {
@@ -173,6 +199,7 @@ public class SensorView extends Activity{
                     btnSoundIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
                 }
                 if (SensorType.equalsIgnoreCase("Smoke")) {
+
                     btnSmokeIndicator.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
                 }
                 if (SensorType.equalsIgnoreCase("Flood")) {
@@ -222,7 +249,7 @@ public class SensorView extends Activity{
             return bmp;
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Log.e("Exception in Image", e.toString() + "");
             return null;
         }
     }
@@ -230,9 +257,12 @@ public class SensorView extends Activity{
     class AsyncTaskGetImageAction extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            if ((PhotoUrl != null) && (sToken != null))
-                if ((PhotoUrl != "") && (sToken != ""))
+
+            if ((PhotoUrl != null) && (sToken != null)) {
+                if ((PhotoUrl.trim().length() > 10) && (PhotoUrl != "") && (sToken != "")) {
                     bitmap = GetBitmapfromUrl(PhotoUrl, sToken);
+                }
+            }
             return null;
         }
         @Override
